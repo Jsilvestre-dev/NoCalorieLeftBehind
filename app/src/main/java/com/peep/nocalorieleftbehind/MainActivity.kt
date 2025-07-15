@@ -4,13 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.peep.nocalorieleftbehind.data.DataModule
-import com.peep.nocalorieleftbehind.ui.theme.NoCalorieLeftBehindTheme
-import com.peep.nocalorieleftbehind.welcome.SelectionScreen
-import com.peep.nocalorieleftbehind.welcome.WelcomeModule
+import com.peep.nocalorieleftbehind.core.ui.Dashboard
+import com.peep.nocalorieleftbehind.core.ui.Welcome
+import com.peep.nocalorieleftbehind.core.di.DataModule
+import com.peep.nocalorieleftbehind.core.ui.theme.NoCalorieLeftBehindTheme
+import com.peep.nocalorieleftbehind.intake_preference.di.PreferenceModule
+import com.peep.nocalorieleftbehind.intake_preference.ui.PreferenceScreen
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.KoinApplication
 
@@ -23,8 +28,8 @@ class MainActivity : ComponentActivity() {
                 application = {
                     androidContext(this@MainActivity)
                     modules(
-                        WelcomeModule,
-                        DataModule
+                        DataModule,
+                        PreferenceModule
                     )
                 }
             ) {
@@ -35,7 +40,12 @@ class MainActivity : ComponentActivity() {
                         startDestination = Welcome
                     ) {
                         composable<Welcome> {
-                            SelectionScreen()
+                            PreferenceScreen(
+                                onContinue = { navController.navigate(route = Dashboard) }
+                            )
+                        }
+                        composable<Dashboard> {
+                            Box(modifier = Modifier.fillMaxSize())
                         }
                     }
                 }

@@ -4,4 +4,7 @@
     <string name="protein">Protein</string>
     <string name="carbs">Carbs</string>
     <string name="fats">Fats</string>
+
+    // error message
+    <string name="error_empty">Please enter a value</string>
 </resources>
