@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.peep.nocalorieleftbehind.core.ui.Dashboard
-import com.peep.nocalorieleftbehind.core.ui.Welcome
 import com.peep.nocalorieleftbehind.core.di.DataModule
+import com.peep.nocalorieleftbehind.core.ui.DashboardScreen
+import com.peep.nocalorieleftbehind.core.ui.PreferenceScreen
 import com.peep.nocalorieleftbehind.core.ui.theme.NoCalorieLeftBehindTheme
 import com.peep.nocalorieleftbehind.intake_preference.di.PreferenceModule
 import com.peep.nocalorieleftbehind.intake_preference.ui.PreferenceScreen
@@ -37,14 +37,14 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Welcome
+                        startDestination = PreferenceScreen
                     ) {
-                        composable<Welcome> {
+                        composable<PreferenceScreen> {
                             PreferenceScreen(
-                                onContinue = { navController.navigate(route = Dashboard) }
+                                onContinue = { navController.navigate(route = DashboardScreen) }
                             )
                         }
-                        composable<Dashboard> {
+                        composable<DashboardScreen> {
                             Box(modifier = Modifier.fillMaxSize())
                         }
                     }

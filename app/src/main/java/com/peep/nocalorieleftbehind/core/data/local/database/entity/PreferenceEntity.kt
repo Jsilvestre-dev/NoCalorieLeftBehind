@@ -8,7 +8,7 @@ data class PreferenceEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val calories: Int,
-    val protein: Int?,
-    val carbs: Int?,
-    val fats: Int?
+    val protein: Int,
+    val carbs: Int,
+    val fats: Int
 )

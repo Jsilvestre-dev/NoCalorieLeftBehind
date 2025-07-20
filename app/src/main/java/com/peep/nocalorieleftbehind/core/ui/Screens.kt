@@ -3,7 +3,7 @@ package com.peep.nocalorieleftbehind.core.ui
 import kotlinx.serialization.Serializable
 
 @Serializable
-object Welcome
+object PreferenceScreen
 
 @Serializable
-object Dashboard
+object DashboardScreen
