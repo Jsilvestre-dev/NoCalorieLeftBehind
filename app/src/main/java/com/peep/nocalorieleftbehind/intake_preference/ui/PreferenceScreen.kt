@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peep.nocalorieleftbehind.core.di.DataModule
 import com.peep.nocalorieleftbehind.core.util.Result
-import com.peep.nocalorieleftbehind.core.data.model.MacroNutrient
+import com.peep.nocalorieleftbehind.core.data.model.Nutrient
 import com.peep.nocalorieleftbehind.core.ui.theme.NoCalorieLeftBehindTheme
 import com.peep.nocalorieleftbehind.core.util.UiState
 import com.peep.nocalorieleftbehind.intake_preference.di.PreferenceModule
@@ -141,7 +141,7 @@ private fun SuccessfulUI(
             }
 
             items(
-                items = MacroNutrient.entries,
+                items = Nutrient.entries,
                 key = { it.name },
             ) { nutrient ->
 
@@ -165,7 +165,7 @@ private fun SuccessfulUI(
                         enabled = nutrientUiState.second !is Result.Waiting,
                         labelPosition = TextFieldLabelPosition.Above(),
                         label = {
-                            if (nutrient != MacroNutrient.CALORIES) {
+                            if (nutrient != Nutrient.CALORIES) {
                                 Text(
                                     text = "(Optional)",
                                     style = MaterialTheme.typography.labelLarge

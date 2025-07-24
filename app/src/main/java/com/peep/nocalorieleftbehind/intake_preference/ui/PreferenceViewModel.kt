@@ -21,7 +21,7 @@ class PreferenceViewModel(
             intakeRepository.getPreference()?.also { preference ->
                 _preferenceUiState.update {
                     PreferenceUiState(
-                        calories = validateNutrientValueUseCase(preference.calories),
+                        calories = validateNutrientValueUseCase(preference.trackedNutrientLimits),
                         protein = validateNutrientValueUseCase(preference.protein),
                         carbs = validateNutrientValueUseCase(preference.carbs),
                         fats = validateNutrientValueUseCase(preference.fats)

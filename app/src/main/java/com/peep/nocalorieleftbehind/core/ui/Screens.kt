@@ -7,3 +7,6 @@ object PreferenceScreen
 
 @Serializable
 object DashboardScreen
+
+@Serializable
+object AddFoodScreen

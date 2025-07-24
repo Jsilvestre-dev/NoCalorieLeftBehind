@@ -1,33 +1,32 @@
 package com.peep.nocalorieleftbehind.intake_preference.ui
 
 import androidx.compose.runtime.Immutable
-import com.peep.nocalorieleftbehind.core.data.model.MacroNutrient
+import com.peep.nocalorieleftbehind.core.data.model.Nutrient
 import com.peep.nocalorieleftbehind.core.util.Result
+import com.peep.nocalorieleftbehind.core.util.UiState
 
 @Immutable
 data class PreferenceUiState(
-    val calories: Pair<Int, Result>,
-    val protein: Pair<Int, Result>,
-    val carbs: Pair<Int, Result>,
-    val fats: Pair<Int, Result>
+    val trackedNutrientLimits: Map<Nutrient, UiState<Int>>
 ) {
     fun isAllValid(): Boolean {
         return calories.second is Result.Successful && protein.second is Result.Successful && carbs.second is Result.Successful && fats.second is Result.Successful
     }
 
-    fun get(nutrient: MacroNutrient) = when (nutrient) {
-        MacroNutrient.CALORIES -> this.calories
-        MacroNutrient.PROTEIN -> this.protein
-        MacroNutrient.FATS -> this.fats
-        MacroNutrient.CARBS -> this.carbs
+    fun get(nutrient: Nutrient) = when (nutrient) {
+        Nutrient.CALORIES -> this.calories
+        Nutrient.PROTEIN -> this.protein
+        Nutrient.FATS -> this.fats
+        Nutrient.CARBS -> this.carbs
     }
 
-    fun update(valueAndResult: Pair<Int, Result>, nutrient: MacroNutrient): PreferenceUiState = when (nutrient) {
-        MacroNutrient.CALORIES -> copy(calories = valueAndResult)
-        MacroNutrient.PROTEIN -> copy(protein = valueAndResult)
-        MacroNutrient.FATS -> copy(fats = valueAndResult)
-        MacroNutrient.CARBS -> copy(carbs = valueAndResult)
-    }
+    fun update(valueAndResult: Pair<Int, Result>, nutrient: Nutrient): PreferenceUiState =
+        when (nutrient) {
+            Nutrient.CALORIES -> copy(calories = valueAndResult)
+            Nutrient.PROTEIN -> copy(protein = valueAndResult)
+            Nutrient.FATS -> copy(fats = valueAndResult)
+            Nutrient.CARBS -> copy(carbs = valueAndResult)
+        }
 
     companion object {
         fun default() = PreferenceUiState(
