@@ -53,22 +53,13 @@ import org.koin.compose.viewmodel.koinViewModel
 fun PreferenceScreen(onContinue: () -> Unit) {
     val viewModel = koinViewModel<PreferenceViewModel>()
     val preferenceUiState = viewModel.preferenceUiState.collectAsStateWithLifecycle()
-    val screenUiState = viewModel.screenUiState.collectAsStateWithLifecycle()
 
-    when (screenUiState.value) {
-        is UiState.Error -> {}
-        is UiState.Loading -> {
-            LoadingUi()
-        }
+    SuccessfulUI(
+        preferenceUiState = { preferenceUiState.value },
+        onInput = viewModel::onInput,
+        onSave = { viewModel.savePreference(onCompletion = onContinue) },
+    )
 
-        is UiState.Success -> {
-            SuccessfulUI(
-                preferenceUiState = { preferenceUiState.value },
-                onInput = viewModel::onInput,
-                onSave = { viewModel.savePreference(onCompletion = onContinue) },
-            )
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -145,7 +136,8 @@ private fun SuccessfulUI(
                 key = { it.name },
             ) { nutrient ->
 
-                val nutrientUiState = preferenceUiState().get(nutrient)
+                val nutrientUiState =
+                    preferenceUiState().trackedNutrientLimits.getOrDefault(nutrient, UiState.Success(0))
                 val textFieldState = rememberTextFieldState()
 
                 Row(
@@ -162,7 +154,7 @@ private fun SuccessfulUI(
 
                     OutlinedTextField(
                         modifier = Modifier.weight(.5f),
-                        enabled = nutrientUiState.second !is Result.Waiting,
+                        enabled = nutrientUiState !is UiState.Loading,
                         labelPosition = TextFieldLabelPosition.Above(),
                         label = {
                             if (nutrient != Nutrient.CALORIES) {
@@ -178,15 +170,13 @@ private fun SuccessfulUI(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
                         ),
-                        isError = nutrientUiState.second is Result.Failure,
+                        isError = nutrientUiState is UiState.Error,
                         supportingText = {
-                            nutrientUiState.second.let {
-                                if (it is Result.Failure) {
-                                    Text(
-                                        text = "Something is wrong",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                    )
-                                }
+                            if (nutrientUiState is UiState.Error) {
+                                Text(
+                                    text = "Something is wrong",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
                             }
                         },
                         shape = ShapeDefaults.Large,
@@ -221,7 +211,7 @@ private fun PreviewSuccessfulUi() {
     ) {
         NoCalorieLeftBehindTheme {
             SuccessfulUI(
-                preferenceUiState = { PreferenceUiState.default() },
+                preferenceUiState = { PreferenceUiState(mapOf()) },
                 onInput = {},
                 onSave = {}
             )

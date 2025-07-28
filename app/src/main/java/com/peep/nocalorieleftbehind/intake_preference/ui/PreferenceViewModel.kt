@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.peep.nocalorieleftbehind.core.data.local.IntakeRepository
 import com.peep.nocalorieleftbehind.core.data.model.Preference
 import com.peep.nocalorieleftbehind.core.util.UiState
-import com.peep.nocalorieleftbehind.intake_preference.domain.ValidateNutrientValueUseCase
+import com.peep.nocalorieleftbehind.intake_preference.domain.ValidateNutrientLimitsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class PreferenceViewModel(
     private val intakeRepository: IntakeRepository,
-    private val validateNutrientValueUseCase: ValidateNutrientValueUseCase
+    private val validateNutrientLimitsUseCase: ValidateNutrientLimitsUseCase
 ) : ViewModel() {
 
     init {
@@ -21,28 +21,19 @@ class PreferenceViewModel(
             intakeRepository.getPreference()?.also { preference ->
                 _preferenceUiState.update {
                     PreferenceUiState(
-                        calories = validateNutrientValueUseCase(preference.trackedNutrientLimits),
-                        protein = validateNutrientValueUseCase(preference.protein),
-                        carbs = validateNutrientValueUseCase(preference.carbs),
-                        fats = validateNutrientValueUseCase(preference.fats)
+                        trackedNutrientLimits = validateNutrientLimitsUseCase(preference.trackedNutrientLimits)
                     )
                 }
             }
-            _screenUiState.update { UiState.Success }
         }
     }
 
     private val _preferenceUiState = MutableStateFlow<PreferenceUiState>(PreferenceUiState.default())
     val preferenceUiState = _preferenceUiState.asStateFlow()
 
-    private val _screenUiState = MutableStateFlow<UiState>(UiState.Loading)
-    val screenUiState = _screenUiState.asStateFlow()
-
     fun onInput(nutrientInput: NutrientInput) {
-        val validatedNutrientValueResult = validateNutrientValueUseCase(value = nutrientInput.value)
+        val validatedNutrientValueResult = validateNutrientLimitsUseCase(value = nutrientInput.value)
         _preferenceUiState.update { preferenceUiState ->
-            if (_screenUiState.value !is UiState.Success) return
-
             preferenceUiState.update(
                 valueAndResult = validatedNutrientValueResult,
                 nutrient = nutrientInput.nutrient
@@ -53,7 +44,6 @@ class PreferenceViewModel(
     fun savePreference(onCompletion: () -> Unit = {}) {
         viewModelScope.launch {
             val currentPreferenceUiState = _preferenceUiState.value
-            if (_screenUiState.value !is UiState.Success) return@launch
             if (!currentPreferenceUiState.isAllValid()) return@launch
 
             currentPreferenceUiState.let {
