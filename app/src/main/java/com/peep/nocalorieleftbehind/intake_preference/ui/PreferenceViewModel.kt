@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peep.nocalorieleftbehind.core.data.local.IntakeRepository
 import com.peep.nocalorieleftbehind.core.data.model.Preference
+import com.peep.nocalorieleftbehind.core.util.Result
 import com.peep.nocalorieleftbehind.core.util.UiState
 import com.peep.nocalorieleftbehind.intake_preference.domain.ValidateNutrientLimitsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,42 +21,47 @@ class PreferenceViewModel(
         viewModelScope.launch {
             intakeRepository.getPreference()?.also { preference ->
                 _preferenceUiState.update {
-                    PreferenceUiState(
-                        trackedNutrientLimits = validateNutrientLimitsUseCase(preference.trackedNutrientLimits)
-                    )
+                    validateNutrientLimitsUseCase(preference)
                 }
             }
         }
     }
 
-    private val _preferenceUiState = MutableStateFlow<PreferenceUiState>(PreferenceUiState.default())
+    private val _preferenceUiState = MutableStateFlow(PreferenceUiState.default())
     val preferenceUiState = _preferenceUiState.asStateFlow()
 
     fun onInput(nutrientInput: NutrientInput) {
-        val validatedNutrientValueResult = validateNutrientLimitsUseCase(value = nutrientInput.value)
-        _preferenceUiState.update { preferenceUiState ->
-            preferenceUiState.update(
-                valueAndResult = validatedNutrientValueResult,
-                nutrient = nutrientInput.nutrient
-            )
+        println("onInput: $nutrientInput")
+        viewModelScope.launch {
+            _preferenceUiState.update { preferenceUiState ->
+                preferenceUiState.updateNutrient(
+                    nutrient = nutrientInput.nutrient,
+                    uiState = validateNutrientLimitsUseCase(nutrientAmount = nutrientInput.value),
+                )
+            }
         }
     }
 
     fun savePreference(onCompletion: () -> Unit = {}) {
         viewModelScope.launch {
             val currentPreferenceUiState = _preferenceUiState.value
+
             if (!currentPreferenceUiState.isAllValid()) return@launch
 
-            currentPreferenceUiState.let {
-                intakeRepository.savePreference(
-                    Preference(
-                        calories = it.calories.first,
-                        protein = it.protein.first,
-                        carbs = it.carbs.first,
-                        fats = it.fats.first
-                    )
+            val preference = currentPreferenceUiState.let {
+                Preference(
+                    calories = (it.calories as UiState.Success<Int>).data,
+                    protein = (it.protein as UiState.Success<Int>).data,
+                    carbs = (it.carbs as UiState.Success<Int>).data,
+                    fats = (it.fats as UiState.Success<Int>).data
                 )
             }
-        }.invokeOnCompletion { onCompletion() }
+
+            val saveResult = intakeRepository.savePreference(preference)
+
+            if (saveResult != Result.Successful) return@launch
+
+            onCompletion()
+        }
     }
 }

@@ -1,21 +1,25 @@
 package com.peep.nocalorieleftbehind.intake_preference.domain
 
-import com.peep.nocalorieleftbehind.core.data.model.Nutrient
-import com.peep.nocalorieleftbehind.core.util.Result
+import com.peep.nocalorieleftbehind.core.data.model.Preference
 import com.peep.nocalorieleftbehind.core.util.UiState
+import com.peep.nocalorieleftbehind.intake_preference.ui.PreferenceUiState
 
 class ValidateNutrientLimitsUseCase {
 
-    operator fun invoke(nutrientAmount: Int): UiState<Int> {
+    operator fun invoke(nutrientAmount: Int?): UiState<Int> {
         return getResult(nutrientAmount)
     }
 
-    operator fun invoke(trackedNutrientLimits: Map<Nutrient, Int>): Map<Nutrient, UiState<Int>> {
-        return trackedNutrientLimits.mapValues { nutrient ->
-            getResult(nutrient.value)
-        }
+    operator fun invoke(preference: Preference): PreferenceUiState {
+        return PreferenceUiState(
+            calories = getResult(preference.calories),
+            protein = getResult(preference.protein),
+            carbs = getResult(preference.carbs),
+            fats = getResult(preference.fats)
+        )
     }
 
-    private fun getResult(amount: Int) = if (amount >= 0) UiState.Success(amount) else UiState.Error()
+    private fun getResult(amount: Int?) =
+        if (amount != null && amount >= 0) UiState.Success(amount) else UiState.Error()
 
 }

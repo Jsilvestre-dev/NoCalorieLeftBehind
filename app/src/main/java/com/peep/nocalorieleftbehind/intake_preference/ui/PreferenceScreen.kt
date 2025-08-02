@@ -38,9 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.peep.nocalorieleftbehind.core.di.DataModule
-import com.peep.nocalorieleftbehind.core.util.Result
 import com.peep.nocalorieleftbehind.core.data.model.Nutrient
+import com.peep.nocalorieleftbehind.core.di.DataModule
 import com.peep.nocalorieleftbehind.core.ui.theme.NoCalorieLeftBehindTheme
 import com.peep.nocalorieleftbehind.core.util.UiState
 import com.peep.nocalorieleftbehind.intake_preference.di.PreferenceModule
@@ -136,9 +135,10 @@ private fun SuccessfulUI(
                 key = { it.name },
             ) { nutrient ->
 
-                val nutrientUiState =
-                    preferenceUiState().trackedNutrientLimits.getOrDefault(nutrient, UiState.Success(0))
-                val textFieldState = rememberTextFieldState()
+                val nutrientUiState = preferenceUiState().getNutrient(nutrient)
+                val textFieldState = rememberTextFieldState(
+                    initialText = (nutrientUiState as? UiState.Success<Int>)?.data?.toString() ?: ""
+                )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -188,7 +188,7 @@ private fun SuccessfulUI(
                     LaunchedEffect(text) {
                         onInput(
                             NutrientInput(
-                                value = runCatching { text.toInt() }.getOrDefault(0),
+                                value = runCatching { text.toInt() }.getOrNull(),
                                 nutrient = nutrient
                             )
                         )
@@ -211,7 +211,7 @@ private fun PreviewSuccessfulUi() {
     ) {
         NoCalorieLeftBehindTheme {
             SuccessfulUI(
-                preferenceUiState = { PreferenceUiState(mapOf()) },
+                preferenceUiState = { PreferenceUiState.default() },
                 onInput = {},
                 onSave = {}
             )
