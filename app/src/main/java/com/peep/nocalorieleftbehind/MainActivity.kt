@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.peep.nocalorieleftbehind.add_food.AddFoodModule
-import com.peep.nocalorieleftbehind.add_food.AddFoodScreen
+import com.peep.nocalorieleftbehind.record_intake.RecordIntakeModule
+import com.peep.nocalorieleftbehind.record_intake.RecordIntakeScreen
 import com.peep.nocalorieleftbehind.core.di.DataModule
 import com.peep.nocalorieleftbehind.core.ui.AddFoodScreen
 import com.peep.nocalorieleftbehind.core.ui.DashboardScreen
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                         DataModule,
                         DashboardModule,
                         PreferenceModule,
-                        AddFoodModule,
+                        RecordIntakeModule,
                     )
                 }
             ) {
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                             DashboardScreen()
                         }
                         composable<AddFoodScreen> {
-                            AddFoodScreen()
+                            RecordIntakeScreen()
                         }
                     }
                 }

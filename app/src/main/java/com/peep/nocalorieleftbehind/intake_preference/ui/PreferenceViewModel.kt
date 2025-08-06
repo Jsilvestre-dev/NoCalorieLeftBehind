@@ -6,7 +6,7 @@ import com.peep.nocalorieleftbehind.core.data.local.IntakeRepository
 import com.peep.nocalorieleftbehind.core.data.model.Preference
 import com.peep.nocalorieleftbehind.core.util.Result
 import com.peep.nocalorieleftbehind.core.util.UiState
-import com.peep.nocalorieleftbehind.intake_preference.domain.ValidateNutrientLimitsUseCase
+import com.peep.nocalorieleftbehind.intake_preference.domain.ValidateNutrientValueUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,14 +14,14 @@ import kotlinx.coroutines.launch
 
 class PreferenceViewModel(
     private val intakeRepository: IntakeRepository,
-    private val validateNutrientLimitsUseCase: ValidateNutrientLimitsUseCase
+    private val validateNutrientValueUseCase: ValidateNutrientValueUseCase
 ) : ViewModel() {
 
     init {
         viewModelScope.launch {
             intakeRepository.getPreference()?.also { preference ->
                 _preferenceUiState.update {
-                    validateNutrientLimitsUseCase(preference)
+                    validateNutrientValueUseCase(preference)
                 }
             }
         }
@@ -36,7 +36,7 @@ class PreferenceViewModel(
             _preferenceUiState.update { preferenceUiState ->
                 preferenceUiState.updateNutrient(
                     nutrient = nutrientInput.nutrient,
-                    uiState = validateNutrientLimitsUseCase(nutrientAmount = nutrientInput.value),
+                    uiState = validateNutrientValueUseCase(nutrientAmount = nutrientInput.value),
                 )
             }
         }

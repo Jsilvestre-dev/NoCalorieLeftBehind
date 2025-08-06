@@ -4,7 +4,7 @@ import com.peep.nocalorieleftbehind.core.data.model.Preference
 import com.peep.nocalorieleftbehind.core.util.UiState
 import com.peep.nocalorieleftbehind.intake_preference.ui.PreferenceUiState
 
-class ValidateNutrientLimitsUseCase {
+class ValidateNutrientValueUseCase {
 
     operator fun invoke(nutrientAmount: Int?): UiState<Int> {
         return getResult(nutrientAmount)

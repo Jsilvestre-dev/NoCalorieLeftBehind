@@ -1,7 +1,6 @@
 package com.peep.nocalorieleftbehind.intake_preference.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -58,22 +56,6 @@ fun PreferenceScreen(onContinue: () -> Unit) {
         onInput = viewModel::onInput,
         onSave = { viewModel.savePreference(onCompletion = onContinue) },
     )
-
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun LoadingUi() {
-    Scaffold { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentAlignment = Alignment.Center
-        ) {
-            LoadingIndicator()
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -216,13 +198,5 @@ private fun PreviewSuccessfulUi() {
                 onSave = {}
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewLoadingUi() {
-    NoCalorieLeftBehindTheme {
-        LoadingUi()
     }
 }
