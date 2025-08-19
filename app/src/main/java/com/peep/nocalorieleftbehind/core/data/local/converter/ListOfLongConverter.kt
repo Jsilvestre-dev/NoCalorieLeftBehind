@@ -1,19 +1,18 @@
 package com.peep.nocalorieleftbehind.core.data.local.converter
 
 import androidx.room.TypeConverter
-import com.peep.nocalorieleftbehind.core.domain.model.Nutrient
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 
-class MapNutrientIntConverter {
+class ListOfLongConverter {
     @OptIn(ExperimentalStdlibApi::class)
     @TypeConverter
-    fun convertToString(trackedNutrientLimits: Map<Nutrient, Int>): String? {
+    fun convertToString(listOfLong: List<Long>): String? {
         return try {
             val moshi = Moshi.Builder().build()
-            val jsonAdapter: JsonAdapter<Map<Nutrient, Int>> = moshi.adapter<Map<Nutrient, Int>>()
-            return jsonAdapter.toJson(trackedNutrientLimits)
+            val jsonAdapter: JsonAdapter<List<Long>> = moshi.adapter<List<Long>>()
+            return jsonAdapter.toJson(listOfLong)
         } catch (e: Exception) {
             null
         }
@@ -21,10 +20,10 @@ class MapNutrientIntConverter {
 
     @OptIn(ExperimentalStdlibApi::class)
     @TypeConverter
-    fun convertToMapNutrientInt(json: String): Map<Nutrient, Int>? {
+    fun convertListOfLong(json: String): List<Long>? {
         return try {
             val moshi = Moshi.Builder().build()
-            val jsonAdapter: JsonAdapter<Map<Nutrient, Int>> = moshi.adapter<Map<Nutrient, Int>>()
+            val jsonAdapter: JsonAdapter<List<Long>> = moshi.adapter<List<Long>>()
             jsonAdapter.fromJson(json)
         } catch (e: Exception) {
             null

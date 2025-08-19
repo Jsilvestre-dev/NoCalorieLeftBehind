@@ -7,33 +7,33 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.peep.nocalorieleftbehind.record_intake.RecordIntakeModule
-import com.peep.nocalorieleftbehind.record_intake.RecordIntakeScreen
-import com.peep.nocalorieleftbehind.core.di.DataModule
-import com.peep.nocalorieleftbehind.core.ui.AddFoodScreen
-import com.peep.nocalorieleftbehind.core.ui.DashboardScreen
+import com.peep.nocalorieleftbehind.log_food.di.LogFoodModule
+import com.peep.nocalorieleftbehind.log_food.ui.RecordIntakeScreen
+import com.peep.nocalorieleftbehind.core.di.CoreModule
+import com.peep.nocalorieleftbehind.core.ui.LogFoodScreen
+import com.peep.nocalorieleftbehind.core.ui.SummaryScreen
 import com.peep.nocalorieleftbehind.core.ui.PreferenceScreen
 import com.peep.nocalorieleftbehind.core.ui.theme.NoCalorieLeftBehindTheme
-import com.peep.nocalorieleftbehind.dashboard.DashboardModule
-import com.peep.nocalorieleftbehind.dashboard.DashboardScreen
-import com.peep.nocalorieleftbehind.intake_preference.di.PreferenceModule
-import com.peep.nocalorieleftbehind.intake_preference.ui.PreferenceScreen
+import com.peep.nocalorieleftbehind.summary.di.SummaryModule
+import com.peep.nocalorieleftbehind.summary.ui.DashboardScreen
+import com.peep.nocalorieleftbehind.preference.di.PreferenceModule
+import com.peep.nocalorieleftbehind.preference.ui.PreferenceScreen
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.KoinApplication
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             KoinApplication(
                 application = {
                     androidContext(this@MainActivity)
                     modules(
-                        DataModule,
-                        DashboardModule,
+                        CoreModule,
+                        SummaryModule,
                         PreferenceModule,
-                        RecordIntakeModule,
+                        LogFoodModule,
                     )
                 }
             ) {
@@ -45,14 +45,20 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable<PreferenceScreen> {
                             PreferenceScreen(
-                                onContinue = { navController.navigate(route = DashboardScreen) }
+                                onContinue = { navController.navigate(route = SummaryScreen) }
                             )
                         }
-                        composable<DashboardScreen> {
-                            DashboardScreen()
+                        composable<SummaryScreen> {
+                            DashboardScreen(
+                                onNavigateToPreference = { navController.navigate(PreferenceScreen) }
+                            )
                         }
-                        composable<AddFoodScreen> {
-                            RecordIntakeScreen()
+                        composable<LogFoodScreen> {
+                            RecordIntakeScreen(
+                                onFinishedScreen = {
+                                    navController.popBackStack(route = SummaryScreen, inclusive = false)
+                                }
+                            )
                         }
                     }
                 }

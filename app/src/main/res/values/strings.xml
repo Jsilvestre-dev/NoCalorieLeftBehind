@@ -1,5 +1,17 @@
 <resources>
+
+    // app
     <string name="app_name">NoCalorieLeftBehind</string>
+
+    // descriptions
+    <string name="clear_text">Clear Text</string>
+    <string name="eaten">Eaten</string>
+    <string name="edit_preferences">Edit Preferences</string>
+    <string name="go_back">Go Back</string>
+    <string name="left">Left</string>
+
+    // nutrition
+    <string name="food_name">Food name</string>
     <string name="calories">Calories</string>
     <string name="protein">Protein</string>
     <string name="carbs">Carbs</string>

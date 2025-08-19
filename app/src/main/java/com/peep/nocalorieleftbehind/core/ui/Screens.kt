@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 object PreferenceScreen
 
 @Serializable
-object DashboardScreen
+object SummaryScreen
 
 @Serializable
-object AddFoodScreen
+object LogFoodScreen

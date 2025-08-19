@@ -76,6 +76,9 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
+    implementation(libs.jetbrains.kotlinx.collection.immutable)
+    implementation(libs.jetbrains.kotlinx.datetime)
+
     implementation(libs.moshi.kotlin)
 
     implementation(platform(libs.koin.bom))
